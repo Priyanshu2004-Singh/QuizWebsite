@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Setup Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold text-center mb-6 text-blue-700">Quiz Setup</h1>
+
+    <!-- Flash Messages -->
+    <% if (success.length > 0) { %>
+      <div class="bg-green-100 text-green-800 p-4 rounded mb-4">
+        <% success.forEach(msg => { %><p><%= msg %></p><% }) %>
+      </div>
+    <% } %>
+
+    <% if (error.length > 0) { %>
+      <div class="bg-red-100 text-red-800 p-4 rounded mb-4">
+        <% error.forEach(msg => { %><p><%= msg %></p><% }) %>
+      </div>
+    <% } %>
+
+    <form action="/admin/create-quiz" method="GET">
+      <div class="mb-4">
+        <label class="block text-lg mb-2">Number of Questions</label>
+        <input type="number" name="count" min="1" max="50" required class="w-full p-2 border rounded">
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-lg mb-2">Marks per Question</label>
+        <input type="number" name="marks" min="1" required class="w-full p-2 border rounded">
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+          Continue
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

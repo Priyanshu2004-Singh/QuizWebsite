@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Check Quiz Evaluations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-100 to-indigo-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-2xl">
+    <h1 class="text-4xl font-extrabold text-blue-800 mb-8 text-center tracking-wide">📊 Ongoing Quizzes</h1>
+
+    <% if (quizzes.length === 0) { %>
+      <p class="text-center text-gray-600 text-lg">No quizzes found.</p>
+    <% } else { %>
+      <ul class="space-y-5">
+        <% quizzes.forEach(quiz => { %>
+          <li class="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <p class="text-xl font-semibold text-gray-800"><%= quiz.title %></p>
+                <div class="text-sm text-gray-600 mt-1">
+                  <p>🆔 Quiz ID: <%= quiz.id %></p>
+                  <% if (quiz.total_questions) { %>
+                    <p>❓ Questions: <%= quiz.total_questions %></p>
+                  <% } %>
+                  <% if (quiz.marks_per_question) { %>
+                    <p>📝 Marks/Question: <%= quiz.marks_per_question %></p>
+                  <% } %>
+                </div>
+              </div>
+              <div>
+                <a
+                  href="/user/quiz/<%= quiz.id %>"
+                  class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition"
+                >
+                   Start Quiz Now
+                </a>
+              </div>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</body>
+</html>

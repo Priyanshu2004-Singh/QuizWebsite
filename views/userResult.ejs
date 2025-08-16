@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Quiz Results</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #222;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .view-btn {
+      padding: 6px 12px;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .view-btn:hover {
+      background-color: #0b7dda;
+    }
+
+    .no-result {
+      margin-top: 30px;
+      color: #888;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📊 Hello <%= username %>, here are your quiz results:</h2>
+
+  <% if (results.length === 0) { %>
+    <p class="no-result">You haven't attempted any quizzes yet.</p>
+  <% } else { %>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Quiz Title</th>
+          <th>Score</th>
+          <th>Total Marks</th>
+          <th>Attempted On</th>
+          <th>View Answers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% results.forEach((result, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= result.title %></td>
+            <td><%= result.score %></td>
+            <td><%= result.total_marks %></td>
+            <td><%= new Date(result.started_at).toLocaleString() %></td>
+            <td>
+              <a class="view-btn" href="/quiz/answers/<%= result.id %>">View</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+
+</body>
+</html>

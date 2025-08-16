@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz History</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">📚 All Created Quizzes</h1>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden">
+        <thead>
+          <tr class="bg-gray-800 text-white text-sm uppercase tracking-wider">
+            <th class="py-3 px-4 border-r border-gray-700">ID</th>
+            <th class="py-3 px-4 border-r border-gray-700">Title</th>
+            <th class="py-3 px-4 border-r border-gray-700">Total Questions</th>
+            <th class="py-3 px-4 border-r border-gray-700">Marks/Question</th>
+            <th class="py-3 px-4 border-r border-gray-700">Created By</th>
+            <th class="py-3 px-4">Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (quizzes.length > 0) { %>
+            <% quizzes.forEach(quiz => { %>
+              <tr class="border-t border-gray-200 hover:bg-gray-100 text-center">
+                <td class="py-2 px-4 border-r"><%= quiz.id %></td>
+                <td class="py-2 px-4 border-r font-medium text-gray-800"><%= quiz.title %></td>
+                <td class="py-2 px-4 border-r"><%= quiz.total_questions %></td>
+                <td class="py-2 px-4 border-r"><%= quiz.marks_per_question %></td>
+                <td class="py-2 px-4 border-r"><%= quiz.created_by || 'Unknown' %></td>
+                <td class="py-2 px-4 text-gray-600"><%= new Date(quiz.created_at).toLocaleString() %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="py-6 text-center text-gray-500">No quizzes found.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

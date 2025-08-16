@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= quiz.title %> - Take Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-indigo-100 via-purple-100 to-pink-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-2xl border border-gray-200">
+    
+    <!-- Quiz Title -->
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-purple-800 tracking-wide mb-2"><%= quiz.title %></h1>
+      <p class="text-gray-500 text-lg">Answer all questions carefully before submitting</p>
+    </div>
+
+    <!-- Quiz Form -->
+    <form action="/user/submit-quiz/<%= quiz.id %>" method="POST" class="space-y-10">
+
+      <% questions.forEach((q, index) => { %>
+        <div class="p-6 bg-gray-50 rounded-xl border border-gray-300 shadow-sm hover:shadow-md transition">
+          <!-- Question Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">Q<%= index + 1 %>: <%= q.question_text %></h2>
+            <span class="text-sm text-gray-500 bg-white border px-3 py-1 rounded-full shadow">Question ID: <%= q.id %></span>
+          </div>
+
+          <!-- Answer Options -->
+          <div class="grid grid-cols-1 gap-3 pl-2">
+            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
+              <input type="radio" name="answers[<%= q.id %>]" value="a" required class="accent-purple-600" />
+              <span class="text-gray-700 font-medium">A. <%= q.option_a %></span>
+            </label>
+            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
+              <input type="radio" name="answers[<%= q.id %>]" value="b" class="accent-purple-600" />
+              <span class="text-gray-700 font-medium">B. <%= q.option_b %></span>
+            </label>
+            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
+              <input type="radio" name="answers[<%= q.id %>]" value="c" class="accent-purple-600" />
+              <span class="text-gray-700 font-medium">C. <%= q.option_c %></span>
+            </label>
+            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
+              <input type="radio" name="answers[<%= q.id %>]" value="d" class="accent-purple-600" />
+              <span class="text-gray-700 font-medium">D. <%= q.option_d %></span>
+            </label>
+          </div>
+        </div>
+      <% }) %>
+
+      <!-- Submit Button -->
+      <div class="text-center mt-12 sticky bottom-6 bg-white py-4 shadow-inner">
+        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white text-lg px-10 py-3 rounded-lg font-semibold shadow-lg transition">
+          ✅ Submit Quiz
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

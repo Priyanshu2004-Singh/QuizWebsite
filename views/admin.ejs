@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard | QuizMaster</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">🎓 QuizMaster Admin Panel</h1>
+    <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">Logout</a>
+  </nav>
+
+  <!-- Flash Messages -->
+  <div class="max-w-5xl mx-auto mt-4">
+    <% if (success && success.length) { %>
+      <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2">
+        <%= success %>
+      </div>
+    <% } %>
+    <% if (error && error.length) { %>
+      <div class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2">
+        <%= error %>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Admin Grid Panel -->
+  <div class="max-w-6xl mx-auto px-6 py-10">
+    <h2 class="text-3xl font-semibold mb-8 text-center">Welcome, <%= user || "Admin" %> 👋</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Create Quiz -->
+      <a href="/admin/create-quiz" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
+        <h3 class="text-xl font-semibold mb-2">🧠 Create Quiz</h3>
+        <p class="text-gray-600">Add new quiz questions and customize quiz settings.</p>
+      </a>
+
+      <!-- View Results -->
+      <a href="/admin/results" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
+        <h3 class="text-xl font-semibold mb-2">📊 View Results</h3>
+        <p class="text-gray-600">Check quiz performance and student scores.</p>
+      </a>
+
+      <!-- Feedback -->
+      <a href="/admin/feedbacks" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
+        <h3 class="text-xl font-semibold mb-2">📝 Student Feedback</h3>
+        <p class="text-gray-600">Read student feedback and suggestions about quizzes.</p>
+      </a>
+
+      <!-- Manage Participants -->
+      <a href="/admin/participants" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
+        <h3 class="text-xl font-semibold mb-2">👥 Manage Participants</h3>
+        <p class="text-gray-600">Add, edit, or remove participants from the system.</p>
+      </a>
+
+      <!-- Quiz History -->
+      <a href="/admin/history" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
+        <h3 class="text-xl font-semibold mb-2">📚 Quiz History</h3>
+        <p class="text-gray-600">Track all past quizzes, attempts, and data logs.</p>
+      </a>
+
+      <!-- Settings -->
+      <a href="/admin/settings" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
+        <h3 class="text-xl font-semibold mb-2">⚙️ Settings</h3>
+        <p class="text-gray-600">Update profile, system preferences, and more.</p>
+      </a>
+
+    </div>
+  </div>
+
+</body>
+</html>

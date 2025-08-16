@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= quiz.title %> - Evaluation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+
+    <h1 class="text-3xl font-bold text-blue-700 mb-6 text-center">📊 Quiz Evaluation</h1>
+
+    <!-- Quiz Title -->
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center"><%= quiz.title %></h2>
+
+    <!-- Questions List -->
+    <div class="mb-8">
+      <h3 class="text-xl font-medium text-gray-700 mb-2">📝 Questions:</h3>
+      <ul class="list-disc list-inside space-y-1 text-gray-600">
+        <% questions.forEach((question, index) => { %>
+          <li><span class="font-semibold">Q<%= index + 1 %>:</span> <%= question.question_text %></li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <!-- Attempt Results -->
+    <div>
+      <h3 class="text-xl font-medium text-gray-700 mb-4">👤 User Attempts:</h3>
+
+      <% if (attempts.length === 0) { %>
+        <p class="text-gray-500">No users have attempted this quiz yet.</p>
+      <% } else { %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200 rounded-xl">
+            <thead class="bg-blue-100 text-gray-800">
+              <tr>
+                <th class="py-3 px-4 text-left">Username</th>
+                <th class="py-3 px-4 text-left">Score</th>
+                <th class="py-3 px-4 text-left">Total Marks</th>
+                <th class="py-3 px-4 text-left">Started At</th>
+                <th class="py-3 px-4 text-left">Completed At</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700">
+              <% attempts.forEach(attempt => { %>
+                <tr class="border-t">
+                  <td class="py-2 px-4"><%= attempt.username %></td>
+                  <td class="py-2 px-4"><%= attempt.score %></td>
+                  <td class="py-2 px-4"><%= attempt.total_marks %></td>
+                  <td class="py-2 px-4"><%= new Date(attempt.started_at).toLocaleString() %></td>
+                  <td class="py-2 px-4">
+                    <%= attempt.completed_at ? new Date(attempt.completed_at).toLocaleString() : "In Progress" %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</body>
+</html>
