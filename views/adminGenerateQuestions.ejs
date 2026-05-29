@@ -1,0 +1,36 @@
+<%- include('partials/header', { user: user }) %>
+<div class="container">
+  <h1>AI Question Generator</h1>
+  <% if (error && error.length) { %>
+    <div class="alert alert-danger"><%= error.join('<br>') %></div>
+  <% } %>
+  <% if (success && success.length) { %>
+    <div class="alert alert-success"><%= success.join('<br>') %></div>
+  <% } %>
+
+  <form action="/admin/generate-questions" method="POST">
+    <div class="form-group">
+      <label>Quiz Title</label>
+      <input type="text" name="title" class="form-control" placeholder="AI Quiz Title" required />
+    </div>
+    <div class="form-group">
+      <label>Topic</label>
+      <input type="text" name="topic" class="form-control" placeholder="e.g., JavaScript closures" required />
+    </div>
+    <div class="form-group">
+      <label>Number of questions</label>
+      <input type="number" name="count" class="form-control" value="5" min="1" max="50" />
+    </div>
+    <div class="form-group">
+      <label>Difficulty</label>
+      <select name="difficulty" class="form-control">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Generate & Save</button>
+  </form>
+</div>
+<%- include('partials/footer') %>

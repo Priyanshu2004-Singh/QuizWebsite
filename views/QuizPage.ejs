@@ -3,57 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <title><%= quiz.title %> - Take Quiz</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gradient-to-tr from-indigo-100 via-purple-100 to-pink-100 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-2xl border border-gray-200">
-    
-    <!-- Quiz Title -->
-    <div class="text-center mb-10">
-      <h1 class="text-4xl font-extrabold text-purple-800 tracking-wide mb-2"><%= quiz.title %></h1>
-      <p class="text-gray-500 text-lg">Answer all questions carefully before submitting</p>
+<body>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/quiz">Quizzes</a>
+        <span class="chip">Taking quiz</span>
+      </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/user/results">My Results</a>
+        <a class="button-secondary" href="/logout">Logout</a>
+      </div>
     </div>
+  </nav>
 
-    <!-- Quiz Form -->
-    <form action="/user/submit-quiz/<%= quiz.id %>" method="POST" class="space-y-10">
+  <main class="page-shell main">
+    <section class="hero-shell">
+      <div class="hero-copy">
+        <div class="hero-kicker">Quiz</div>
+        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);"><%= quiz.title %></h1>
+        <p class="hero-text">Answer each question and submit when you’re ready.</p>
+      </div>
+    </section>
 
-      <% questions.forEach((q, index) => { %>
-        <div class="p-6 bg-gray-50 rounded-xl border border-gray-300 shadow-sm hover:shadow-md transition">
-          <!-- Question Header -->
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-800">Q<%= index + 1 %>: <%= q.question_text %></h2>
-            <span class="text-sm text-gray-500 bg-white border px-3 py-1 rounded-full shadow">Question ID: <%= q.id %></span>
-          </div>
+    <section class="section">
+      <form action="/user/submit-quiz/<%= quiz.id %>" method="POST" class="content-stack">
+        <% questions.forEach((q, index) => { %>
+          <article class="panel" style="padding: 1.25rem;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: 1rem; flex-wrap: wrap;">
+              <h2 style="margin: 0; font-size: 1.1rem;">Q<%= index + 1 %>. <%= q.question_text %></h2>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <span class="chip">ID: <%= q.id %></span>
+                <% if (q.difficulty) { %>
+                  <span class="badge"><%= q.difficulty %></span>
+                <% } %>
+              </div>
+            </div>
 
-          <!-- Answer Options -->
-          <div class="grid grid-cols-1 gap-3 pl-2">
-            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
-              <input type="radio" name="answers[<%= q.id %>]" value="a" required class="accent-purple-600" />
-              <span class="text-gray-700 font-medium">A. <%= q.option_a %></span>
-            </label>
-            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
-              <input type="radio" name="answers[<%= q.id %>]" value="b" class="accent-purple-600" />
-              <span class="text-gray-700 font-medium">B. <%= q.option_b %></span>
-            </label>
-            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
-              <input type="radio" name="answers[<%= q.id %>]" value="c" class="accent-purple-600" />
-              <span class="text-gray-700 font-medium">C. <%= q.option_c %></span>
-            </label>
-            <label class="flex items-center space-x-3 bg-white p-3 rounded-lg border hover:border-purple-500 transition">
-              <input type="radio" name="answers[<%= q.id %>]" value="d" class="accent-purple-600" />
-              <span class="text-gray-700 font-medium">D. <%= q.option_d %></span>
-            </label>
+            <div class="card-stack" style="margin-top: 1rem;">
+              <label class="quiz-option" style="padding: 0.85rem 1rem; display:flex; gap: 0.75rem; align-items: flex-start;">
+                <input type="radio" name="answers[<%= q.id %>]" value="A" required style="margin-top: 0.25rem;" />
+                <span><strong>A.</strong> <%= q.option_a %></span>
+              </label>
+              <label class="quiz-option" style="padding: 0.85rem 1rem; display:flex; gap: 0.75rem; align-items: flex-start;">
+                <input type="radio" name="answers[<%= q.id %>]" value="B" style="margin-top: 0.25rem;" />
+                <span><strong>B.</strong> <%= q.option_b %></span>
+              </label>
+              <label class="quiz-option" style="padding: 0.85rem 1rem; display:flex; gap: 0.75rem; align-items: flex-start;">
+                <input type="radio" name="answers[<%= q.id %>]" value="C" style="margin-top: 0.25rem;" />
+                <span><strong>C.</strong> <%= q.option_c %></span>
+              </label>
+              <label class="quiz-option" style="padding: 0.85rem 1rem; display:flex; gap: 0.75rem; align-items: flex-start;">
+                <input type="radio" name="answers[<%= q.id %>]" value="D" style="margin-top: 0.25rem;" />
+                <span><strong>D.</strong> <%= q.option_d %></span>
+              </label>
+            </div>
+          </article>
+        <% }) %>
+
+        <div class="sticky-bar">
+          <div class="panel" style="padding: 1rem; display:flex; align-items:center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+            <span class="muted">Make sure every question has an answer.</span>
+            <button type="submit" class="button-primary">Submit quiz</button>
           </div>
         </div>
-      <% }) %>
+      </form>
+    </section>
+  </main>
 
-      <!-- Submit Button -->
-      <div class="text-center mt-12 sticky bottom-6 bg-white py-4 shadow-inner">
-        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white text-lg px-10 py-3 rounded-lg font-semibold shadow-lg transition">
-          ✅ Submit Quiz
-        </button>
-      </div>
-    </form>
-  </div>
+  <footer>
+    <div class="page-shell nav-row" style="padding: 1.1rem 0;">
+      <div class="footer-note">Submitting saves your attempt.</div>
+      <div class="footer-note text-right">Good luck.</div>
+    </div>
+  </footer>
 </body>
 </html>

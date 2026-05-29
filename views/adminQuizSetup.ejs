@@ -2,43 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Setup Quiz</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Quiz Setup | QuizMaster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold text-center mb-6 text-blue-700">Quiz Setup</h1>
-
-    <!-- Flash Messages -->
-    <% if (success.length > 0) { %>
-      <div class="bg-green-100 text-green-800 p-4 rounded mb-4">
-        <% success.forEach(msg => { %><p><%= msg %></p><% }) %>
+<body>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/admin">Admin</a>
+        <span class="chip">Create quiz</span>
       </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/admin">Dashboard</a>
+        <a class="button-secondary" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell main">
+    <% if ((success && success.length) || (error && error.length)) { %>
+      <% if (success && success.length) { %>
+        <div class="flash-shell flash-success"><%= Array.isArray(success) ? success.join(' ') : success %></div>
+      <% } %>
+      <% if (error && error.length) { %>
+        <div class="flash-shell flash-error"><%= Array.isArray(error) ? error.join(' ') : error %></div>
+      <% } %>
     <% } %>
 
-    <% if (error.length > 0) { %>
-      <div class="bg-red-100 text-red-800 p-4 rounded mb-4">
-        <% error.forEach(msg => { %><p><%= msg %></p><% }) %>
-      </div>
-    <% } %>
+    <section class="form-shell narrow">
+      <h1 class="form-title">Quiz setup</h1>
+      <p class="form-subtitle">Choose how many questions and the marks per question.</p>
 
-    <form action="/admin/create-quiz" method="GET">
-      <div class="mb-4">
-        <label class="block text-lg mb-2">Number of Questions</label>
-        <input type="number" name="count" min="1" max="50" required class="w-full p-2 border rounded">
-      </div>
+      <form action="/admin/create-quiz" method="GET" class="form-stack">
+        <div class="form-stack">
+          <label>Number of questions</label>
+          <input type="number" name="count" min="1" max="50" required />
+        </div>
 
-      <div class="mb-6">
-        <label class="block text-lg mb-2">Marks per Question</label>
-        <input type="number" name="marks" min="1" required class="w-full p-2 border rounded">
-      </div>
+        <div class="form-stack">
+          <label>Marks per question</label>
+          <input type="number" name="marks" min="1" required />
+        </div>
 
-      <div class="text-center">
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-          Continue
-        </button>
-      </div>
-    </form>
-  </div>
+        <div class="btn-row" style="justify-content: space-between; align-items: center;">
+          <button type="submit" class="button-primary">Continue</button>
+          <a class="button-secondary" href="/admin">Cancel</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell nav-row" style="padding: 1.1rem 0;">
+      <div class="footer-note">Quiz creation is a 2-step flow.</div>
+      <div class="footer-note text-right">Setup → enter questions → submit.</div>
+    </div>
+  </footer>
 </body>
 </html>

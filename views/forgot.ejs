@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forgot Password</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <div class="page-shell main">
+    <section class="section form-shell narrow">
+      <h1 class="form-title">Forgot your password?</h1>
+      <p class="form-subtitle">Enter your username to receive a reset link (demo shows token).</p>
+
+      <form action="/forgot" method="POST">
+        <label>Username</label>
+        <input name="username" required />
+        <div style="margin-top:1rem; text-align:right;">
+          <button class="button-primary" type="submit">Send reset token</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

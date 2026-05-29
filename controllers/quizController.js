@@ -4,13 +4,20 @@ import pool from '../db/db.js'; // Adjust the path based on your project structu
 // ✅ GET all quizzes
 export const getAllQuizzes = async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM quizzes");
-    const { count, marks } = req.query;
+    const { count, marks, tier } = req.query;
+    let sql = "SELECT * FROM quizzes";
+    const params = [];
+    if (tier) {
+      params.push(Number(tier));
+      sql += ` WHERE tier = $${params.length}`;
+    }
+    const result = await db.query(sql, params);
 
     res.render("getAllQuiz", {
       quizzes: result.rows,
       count: count || null,
       marks: marks || null,
+      selectedTier: tier || 'all',
       success: req.flash("success"),
       error: req.flash("error"),
     });
@@ -31,8 +38,8 @@ export const takeQuiz = async (req, res) => {
     }
 
     const questionResult = await db.query(
-      `SELECT id, question_text, option_a, option_b, option_c, option_d 
-       FROM questions WHERE quiz_id = $1`,
+      `SELECT id, question_text, option_a, option_b, option_c, option_d, difficulty
+       FROM questions WHERE quiz_id = $1 ORDER BY id ASC`,
       [quizId]
     );
 
@@ -61,48 +68,114 @@ export const submitQuiz = async (req, res) => {
 
     if (!answers || Object.keys(answers).length === 0) {
       req.flash("error", "No answers submitted.");
-      return res.redirect(`/user/take-quiz/${quizId}`);
+      return res.redirect(`/quiz/${quizId}`);
     }
 
     // 1. Validate quiz exists
-    const quizResult = await db.query("SELECT * FROM quizzes WHERE id = $1", [quizId]);
+    const quizResult = await db.query(
+      "SELECT id, title, marks_per_question FROM quizzes WHERE id = $1",
+      [quizId]
+    );
     if (quizResult.rows.length === 0) {
       return res.status(404).send("Quiz not found");
     }
 
-    // 2. Insert into attempts table
-    const attemptInsert = await db.query(
-      "INSERT INTO attempts (user_id, quiz_id) VALUES ($1, $2) RETURNING id",
-      [userId, quizId]
-    );
-    const attemptId = attemptInsert.rows[0].id;
+    const quiz = quizResult.rows[0];
 
-    // 3. Fetch questions and correct answers
     const questionResult = await db.query(
-      "SELECT id, correct_option FROM questions WHERE quiz_id = $1",
+      "SELECT id, correct_option, difficulty FROM questions WHERE quiz_id = $1 ORDER BY id ASC",
       [quizId]
     );
     const questions = questionResult.rows;
 
     let correctCount = 0;
+    const answersByQuestion = {};
 
-    // 4. Process each question
-    for (let q of questions) {
-      const selectedOption = answers[q.id];
-      if (!selectedOption) continue;
-
-      const isCorrect = selectedOption.toUpperCase() === q.correct_option.toUpperCase();
-      if (isCorrect) correctCount++;
-
-      await db.query(
-        `INSERT INTO user_answers (attempt_id, question_id, selected_option, is_correct)
-         VALUES ($1, $2, $3, $4)`,
-        [attemptId, q.id, selectedOption.toUpperCase(), isCorrect]
-      );
+    if (Array.isArray(req.body.answers)) {
+      questions.forEach((question, index) => {
+        const selectedOption = req.body.answers[index];
+        if (selectedOption !== undefined) {
+          answersByQuestion[String(question.id)] = selectedOption;
+        }
+      });
+    } else if (req.body.answers && typeof req.body.answers === 'object') {
+      Object.assign(answersByQuestion, req.body.answers);
     }
 
-    // 5. Optional: Store result in flash or redirect
-    req.flash("success", `✅ Quiz submitted! You got ${correctCount} out of ${questions.length} correct.`);
+    for (const [fieldName, fieldValue] of Object.entries(req.body)) {
+      const match = fieldName.match(/^answers\[(\d+)\]$/);
+      if (match) {
+        answersByQuestion[match[1]] = fieldValue;
+      }
+    }
+
+    for (let q of questions) {
+      const selectedOption = answersByQuestion[String(q.id)];
+      if (!selectedOption) continue;
+
+      const normalizedSelected = String(selectedOption).trim().toUpperCase();
+      const normalizedCorrect = String(q.correct_option).trim().toUpperCase();
+      const isCorrect = normalizedSelected === normalizedCorrect;
+      if (isCorrect) correctCount++;
+    }
+
+    // Advanced scoring for tiered quizzes
+    const difficultyMultiplier = (d) => {
+      if (!d) return 1;
+      const dd = String(d).toLowerCase();
+      if (dd === 'easy') return 1;
+      if (dd === 'medium') return 1.5;
+      if (dd === 'hard') return 2;
+      return 1;
+    };
+
+    let totalMarks = 0;
+    let score = 0;
+
+    for (let q of questions) {
+      const selectedOption = answersByQuestion[String(q.id)];
+      const perQMultiplier = difficultyMultiplier(q.difficulty || 'medium');
+      const perQMarks = (Number(quiz.marks_per_question) || 1) * perQMultiplier;
+      totalMarks += perQMarks;
+
+      if (!selectedOption) continue;
+      const normalizedSelected = String(selectedOption).trim().toUpperCase();
+      const normalizedCorrect = String(q.correct_option).trim().toUpperCase();
+      const isCorrect = normalizedSelected === normalizedCorrect;
+      if (isCorrect) {
+        score += perQMarks;
+      } else {
+        // Apply light negative marking for tier >=2
+        if (Number(quiz.tier || 1) >= 2) {
+          score -= perQMarks * 0.25; // penalize 25% of question marks
+        }
+      }
+    }
+
+    // Normalize score bounds
+    if (score < 0) score = 0;
+    // Round scores to integer
+    const roundedScore = Math.round(score);
+    const roundedTotal = Math.round(totalMarks);
+
+    const insertAttempt = await db.query(
+      "INSERT INTO attempts (user_id, quiz_id, score, total_marks) VALUES ($1, $2, $3, $4) RETURNING id",
+      [userId, quizId, roundedScore, roundedTotal]
+    );
+    const attemptId = insertAttempt.rows[0].id;
+
+    // Persist per-question responses for reporting
+    const insertRespQ = `INSERT INTO responses (attempt_id, question_id, selected_option, is_correct) VALUES ($1,$2,$3,$4)`;
+    for (let q of questions) {
+      const sel = answersByQuestion[String(q.id)];
+      if (!sel) continue;
+      const normalizedSelected = String(sel).trim().toUpperCase();
+      const normalizedCorrect = String(q.correct_option).trim().toUpperCase();
+      const isCorrect = normalizedSelected === normalizedCorrect;
+      await db.query(insertRespQ, [attemptId, q.id, normalizedSelected, isCorrect]);
+    }
+
+    req.flash("success", `✅ Quiz submitted! You scored ${roundedScore} out of ${roundedTotal}.`);
     res.redirect(`/feedback/${quizId}`);
 
 
@@ -160,17 +233,22 @@ export const userResult = async (req, res) => {
     const userId = req.session.user.id;
 
     const result = await pool.query(
-      `SELECT a.id, q.title, a.score, a.total_marks, a.started_at
+      `SELECT a.id, q.title, a.score, a.total_marks, a.attempted_at AS started_at
        FROM attempts a
        JOIN quizzes q ON a.quiz_id = q.id
        WHERE a.user_id = $1
-       ORDER BY a.started_at DESC`,
+       ORDER BY a.attempted_at DESC`,
       [userId]
     );
 
     res.render("userResult", {
       results: result.rows,
-      username: req.session.user.username
+      username: req.session.user.username,
+      summary: {
+        attempts: result.rows.length,
+        bestScore: result.rows.length ? Math.max(...result.rows.map(item => Number(item.score || 0))) : 0,
+        averageScore: result.rows.length ? (result.rows.reduce((sum, item) => sum + Number(item.score || 0), 0) / result.rows.length).toFixed(1) : '0.0',
+      }
     });
 
   } catch (error) {

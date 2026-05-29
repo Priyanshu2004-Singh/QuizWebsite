@@ -2,45 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Check Quiz Evaluations</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Quizzes | QuizMaster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gradient-to-br from-slate-100 to-indigo-100 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-2xl">
-    <h1 class="text-4xl font-extrabold text-blue-800 mb-8 text-center tracking-wide">📊 Ongoing Quizzes</h1>
+<body>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/">QuizMaster</a>
+        <span class="chip">Quizzes</span>
+      </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/">Home</a>
+        <a class="secondary-btn" href="/user/results">My Results</a>
+        <a class="button-secondary" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
 
-    <% if (quizzes.length === 0) { %>
-      <p class="text-center text-gray-600 text-lg">No quizzes found.</p>
-    <% } else { %>
-      <ul class="space-y-5">
-        <% quizzes.forEach(quiz => { %>
-          <li class="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <p class="text-xl font-semibold text-gray-800"><%= quiz.title %></p>
-                <div class="text-sm text-gray-600 mt-1">
-                  <p>🆔 Quiz ID: <%= quiz.id %></p>
-                  <% if (quiz.total_questions) { %>
-                    <p>❓ Questions: <%= quiz.total_questions %></p>
-                  <% } %>
-                  <% if (quiz.marks_per_question) { %>
-                    <p>📝 Marks/Question: <%= quiz.marks_per_question %></p>
-                  <% } %>
-                </div>
-              </div>
-              <div>
-                <a
-                  href="/user/quiz/<%= quiz.id %>"
-                  class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition"
-                >
-                   Start Quiz Now
-                </a>
-              </div>
-            </div>
-          </li>
-        <% }) %>
-      </ul>
+  <main class="page-shell main">
+    <% if (messages?.success?.length || messages?.error?.length || (success && success.length) || (error && error.length)) { %>
+      <% if (messages?.success?.length) { %>
+        <div class="flash-shell flash-success"><%= messages.success.join(' ') %></div>
+      <% } else if (success && success.length) { %>
+        <div class="flash-shell flash-success"><%= Array.isArray(success) ? success.join(' ') : success %></div>
+      <% } %>
+      <% if (messages?.error?.length) { %>
+        <div class="flash-shell flash-error"><%= messages.error.join(' ') %></div>
+      <% } else if (error && error.length) { %>
+        <div class="flash-shell flash-error"><%= Array.isArray(error) ? error.join(' ') : error %></div>
+      <% } %>
     <% } %>
-  </div>
+
+    <section class="hero-shell">
+      <div class="hero-copy">
+        <div class="hero-kicker">Choose a quiz</div>
+        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);">Ongoing quizzes</h1>
+        <p class="hero-text">Pick a quiz and submit when you’re done — scoring is instant.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div style="display:flex; gap:0.5rem; margin-bottom:1rem; align-items:center;">
+        <form method="GET" action="/quiz" style="display:flex; gap:0.5rem; align-items:center;">
+          <label class="muted">Tier:</label>
+          <select name="tier" onchange="this.form.submit()">
+            <option value="" <%= !selectedTier || selectedTier==='all' ? 'selected' : '' %>>All</option>
+            <option value="1" <%= selectedTier==='1' ? 'selected' : '' %>>Tier 1</option>
+            <option value="2" <%= selectedTier==='2' ? 'selected' : '' %>>Tier 2 (Advanced)</option>
+          </select>
+        </form>
+        <div class="muted" style="font-size:0.9rem;">Tip: Tier 2 quizzes use weighted scoring and light negative marking.</div>
+      </div>
+      <% if (!quizzes || quizzes.length === 0) { %>
+        <div class="panel empty-state">No quizzes found.</div>
+      <% } else { %>
+        <div class="quiz-grid">
+          <% quizzes.forEach((quiz) => { %>
+            <article class="quiz-card">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap: 0.75rem;">
+                <h3 class="truncate" title="<%= quiz.title %>"><%= quiz.title %></h3>
+                <% if (quiz.level) { %>
+                  <span class="badge"><%= quiz.level %></span>
+                <% } %>
+              </div>
+              <p><%= quiz.description || 'Take this quiz and see your score immediately.' %></p>
+              <div style="display:flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.9rem;">
+                <% if (quiz.total_questions) { %><span class="chip">Questions: <%= quiz.total_questions %></span><% } %>
+                <% if (quiz.marks_per_question) { %><span class="chip">Marks/Q: <%= quiz.marks_per_question %></span><% } %>
+              </div>
+              <a class="button-primary" href="/user/quiz/<%= quiz.id %>">Start quiz</a>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell nav-row" style="padding: 1.1rem 0;">
+      <div class="footer-note">Tip: Take quizzes regularly for best results.</div>
+      <div class="footer-note text-right">Your attempts are saved automatically.</div>
+    </div>
+  </footer>
 </body>
 </html>

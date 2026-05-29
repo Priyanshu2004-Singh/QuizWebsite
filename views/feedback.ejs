@@ -2,41 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Feedback</title>
+  <title>Feedback | QuizMaster</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
-    <h2 class="text-2xl font-bold mb-4 text-gray-800">💬 Submit Your Feedback</h2>
-    
-    <% if (error && error.length > 0) { %>
-      <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4"><%= error %></div>
+<body>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/">QuizMaster</a>
+        <span class="chip">Feedback</span>
+      </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/quiz">Quizzes</a>
+        <a class="secondary-btn" href="/user/results">My Results</a>
+        <a class="button-secondary" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell main">
+    <% if (messages?.success?.length || messages?.error?.length || (success && success.length) || (error && error.length)) { %>
+      <% if (messages?.success?.length) { %>
+        <div class="flash-shell flash-success"><%= messages.success.join(' ') %></div>
+      <% } else if (success && success.length) { %>
+        <div class="flash-shell flash-success"><%= Array.isArray(success) ? success.join(' ') : success %></div>
+      <% } %>
+      <% if (messages?.error?.length) { %>
+        <div class="flash-shell flash-error"><%= messages.error.join(' ') %></div>
+      <% } else if (error && error.length) { %>
+        <div class="flash-shell flash-error"><%= Array.isArray(error) ? error.join(' ') : error %></div>
+      <% } %>
     <% } %>
 
-    <% if (success && success.length > 0) { %>
-      <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4"><%= success %></div>
-    <% } %>
+    <section class="form-shell narrow">
+      <h1 class="form-title">Submit feedback</h1>
+      <p class="form-subtitle">Help improve the quiz experience.</p>
 
-    <form action="/feedback/<%= quiz.id %>" method="POST" class="space-y-4">
-      <div>
-        <label class="block text-gray-700 font-medium mb-1">Quiz Title:</label>
-        <p class="bg-gray-100 p-2 rounded"><%= quiz.title %></p>
+      <div class="panel" style="padding: 1rem; margin-bottom: 1rem;">
+        <div class="muted">Quiz</div>
+        <div style="font-weight: 700; margin-top: 0.25rem;"><%= quiz.title %></div>
       </div>
 
-      <div>
-        <label for="message" class="block text-gray-700 font-medium mb-1">Your Feedback</label>
-        <textarea id="message" name="message" rows="5" required
-                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-      </div>
+      <form action="/feedback/<%= quiz.id %>" method="POST" class="form-stack">
+        <div class="form-stack">
+          <label for="message">Your feedback</label>
+          <textarea id="message" name="message" rows="6" required></textarea>
+        </div>
 
-      <div class="text-right">
-        <button type="submit"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
-          Submit Feedback
-        </button>
-      </div>
-    </form>
-  </div>
+        <div class="btn-row" style="justify-content: space-between; align-items: center;">
+          <button type="submit" class="button-primary">Send feedback</button>
+          <a class="button-secondary" href="/">Back home</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell nav-row" style="padding: 1.1rem 0;">
+      <div class="footer-note">Thanks for helping improve QuizMaster.</div>
+      <div class="footer-note text-right">Feedback is stored per quiz.</div>
+    </div>
+  </footer>
 </body>
 </html>

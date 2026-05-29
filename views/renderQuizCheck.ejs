@@ -3,44 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <title>Check Quiz Evaluations</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gradient-to-br from-slate-100 to-indigo-100 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow-2xl">
-    <h1 class="text-4xl font-extrabold text-blue-800 mb-8 text-center tracking-wide">📊 Quiz Evaluations</h1>
+<body>
+  <div class="page-shell main">
+    <header class="section">
+      <h1 class="section-title">📊 Quiz Evaluations</h1>
+    </header>
 
-    <% if (quizzes.length === 0) { %>
-      <p class="text-center text-gray-600 text-lg">No quizzes found.</p>
-    <% } else { %>
-      <ul class="space-y-5">
-        <% quizzes.forEach(quiz => { %>
-          <li class="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md transition">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <section class="section">
+      <% if (!quizzes || quizzes.length === 0) { %>
+        <div class="panel empty-state">No quizzes found.</div>
+      <% } else { %>
+        <div class="quiz-grid">
+          <% quizzes.forEach(quiz => { %>
+            <div class="quiz-card">
               <div>
-                <p class="text-xl font-semibold text-gray-800"><%= quiz.title %></p>
-                <div class="text-sm text-gray-600 mt-1">
-                  <p>🆔 Quiz ID: <%= quiz.id %></p>
+                <div class="muted">ID: <%= quiz.id %></div>
+                <h3><%= quiz.title %></h3>
+                <div class="muted">
                   <% if (quiz.total_questions) { %>
-                    <p>❓ Questions: <%= quiz.total_questions %></p>
+                    <span>❓ <%= quiz.total_questions %> q</span>
                   <% } %>
                   <% if (quiz.marks_per_question) { %>
-                    <p>📝 Marks/Question: <%= quiz.marks_per_question %></p>
+                    <span style="margin-left:0.5rem;">📝 <%= quiz.marks_per_question %>/q</span>
                   <% } %>
                 </div>
               </div>
-              <div>
-                <a
-                  href="/admin/quiz/<%= quiz.id %>/result"
-                  class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium shadow-md transition"
-                >
-                  🔍 Check Evaluation
-                </a>
+              <div style="text-align:right;">
+                <a class="secondary-btn" href="/admin/quiz/<%= quiz.id %>/result">🔍 Check Evaluation</a>
               </div>
             </div>
-          </li>
-        <% }) %>
-      </ul>
-    <% } %>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
   </div>
 </body>
 </html>

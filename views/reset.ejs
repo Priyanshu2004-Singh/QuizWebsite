@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reset Password</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <div class="page-shell main">
+    <section class="section form-shell narrow">
+      <h1 class="form-title">Reset Password</h1>
+      <% if (tokenDisclaimer) { %>
+        <div class="muted"><%= tokenDisclaimer %></div>
+      <% } %>
+
+      <form action="/reset/<%= token %>" method="POST">
+        <label>New Password</label>
+        <input name="password" type="password" required />
+        <label>Confirm Password</label>
+        <input name="confirm" type="password" required />
+        <div style="margin-top:1rem; text-align:right;">
+          <button class="button-primary" type="submit">Set new password</button>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

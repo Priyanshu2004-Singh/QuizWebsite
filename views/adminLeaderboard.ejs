@@ -1,0 +1,40 @@
+<%- include('partials/header', { user: user }) %>
+<div class="container">
+  <h1>Leaderboard</h1>
+  <% if (error && error.length) { %>
+    <div class="alert alert-danger"><%= error.join('<br>') %></div>
+  <% } %>
+  <% if (success && success.length) { %>
+    <div class="alert alert-success"><%= success.join('<br>') %></div>
+  <% } %>
+
+  <% if (!leaders || leaders.length === 0) { %>
+    <div class="panel empty-state">No leaderboard data yet.</div>
+  <% } else { %>
+    <div class="table-shell">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Attempts</th>
+            <th>Best Score</th>
+            <th>Average Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% leaders.forEach((l, idx) => { %>
+            <tr>
+              <td><%= idx + 1 %></td>
+              <td><%= l.username %></td>
+              <td><%= l.attempts %></td>
+              <td><%= l.best_score %></td>
+              <td><%= l.avg_score %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+<%- include('partials/footer') %>

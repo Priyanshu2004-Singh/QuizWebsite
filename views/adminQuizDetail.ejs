@@ -1,0 +1,44 @@
+<%- include('partials/header', { user: user }) %>
+<div class="container">
+  <h1>Quiz Report: <%= quiz.title %></h1>
+  <div style="margin-bottom:0.75rem;">
+    <a class="button-primary" href="/admin/quiz/<%= quiz.id %>/detail/export">Export CSV</a>
+  </div>
+  <% if (error && error.length) { %>
+    <div class="alert alert-danger"><%= error.join('<br>') %></div>
+  <% } %>
+  <% if (success && success.length) { %>
+    <div class="alert alert-success"><%= success.join('<br>') %></div>
+  <% } %>
+
+  <% if (!stats || stats.length === 0) { %>
+    <div class="panel empty-state">No response data yet.</div>
+  <% } else { %>
+    <% stats.forEach((s, idx) => { %>
+      <div class="panel" style="margin-bottom:1rem;">
+        <h3>Q<%= idx+1 %>: <%= s.question.question_text %></h3>
+        <div style="display:flex; gap:1rem;">
+          <div style="flex:1">
+            <ul>
+              <li><strong>A:</strong> <%= s.question.option_a %> — <%= s.counts.A %> (<%= s.total>0 ? Math.round((s.counts.A/s.total)*100) : 0 %>%)</li>
+              <li><strong>B:</strong> <%= s.question.option_b %> — <%= s.counts.B %> (<%= s.total>0 ? Math.round((s.counts.B/s.total)*100) : 0 %>%)</li>
+              <li><strong>C:</strong> <%= s.question.option_c %> — <%= s.counts.C %> (<%= s.total>0 ? Math.round((s.counts.C/s.total)*100) : 0 %>%)</li>
+              <li><strong>D:</strong> <%= s.question.option_d %> — <%= s.counts.D %> (<%= s.total>0 ? Math.round((s.counts.D/s.total)*100) : 0 %>%)</li>
+            </ul>
+          </div>
+          <div style="flex:0 0 220px;">
+            <div class="muted">Correct option: <strong><%= s.question.correct_option %></strong></div>
+            <div style="margin-top:0.5rem">Responses: <strong><%= s.total %></strong></div>
+            <div style="margin-top:0.5rem">Most chosen: <strong>
+              <% const max = Math.max(s.counts.A, s.counts.B, s.counts.C, s.counts.D); %>
+              <% if (max === 0) { %>None<% } else { %>
+                <% if (s.counts.A === max) { %>A<% } else if (s.counts.B === max) { %>B<% } else if (s.counts.C === max) { %>C<% } else { %>D<% } %>
+              <% } %>
+            </strong></div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
+<%- include('partials/footer') %>

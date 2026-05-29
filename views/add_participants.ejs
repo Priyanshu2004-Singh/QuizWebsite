@@ -3,82 +3,163 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Dashboard | QuizMaster</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<body>
 
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold text-gray-800">QuizMaster Admin</h1>
-    <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md">Logout</a>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/admin">Admin</a>
+        <span class="chip">Participants</span>
+      </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/admin">Dashboard</a>
+        <a class="button-secondary" href="/logout">Logout</a>
+      </div>
+    </div>
   </nav>
 
-  <!-- Flash Messages -->
-  <div class="max-w-4xl mx-auto mt-4">
-    <% if (success && success.length) { %>
-      <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2">
-        <%= success %>
-      </div>
-    <% } %>
-    <% if (error && error.length) { %>
-      <div class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2">
-        <%= error %>
-      </div>
-    <% } %>
-  </div>
-
-  <!-- Admin Dashboard -->
-  <div class="max-w-5xl mx-auto px-6 py-10">
-    
-    <!-- Add Participant -->
-    <section class="mb-10 bg-white p-6 rounded-lg shadow">
-      <h2 class="text-2xl font-semibold mb-4">➕ Add New Participant</h2>
-      <form action="/admin/add-user" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <input type="text" name="username" placeholder="Username" class="border border-gray-300 rounded px-4 py-2" required />
-        <input type="password" name="password" placeholder="Password" class="border border-gray-300 rounded px-4 py-2" required />
-        <input type="number" name="marks" placeholder="Initial Marks" class="border border-gray-300 rounded px-4 py-2" />
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mt-2 sm:col-span-2">Add Participant</button>
-      </form>
+  <main class="page-shell main">
+    <section class="section">
+      <% if (success && success.length) { %>
+        <div class="panel success"><%= success %></div>
+      <% } %>
+      <% if (error && error.length) { %>
+        <div class="panel error"><%= error %></div>
+      <% } %>
     </section>
 
-    <!-- Participant List -->
-    <section class="bg-white p-6 rounded-lg shadow">
-      <h2 class="text-2xl font-semibold mb-4">📋 Participant Scores</h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white border">
-          <thead>
-            <tr class="bg-gray-200 text-left text-gray-700 text-sm">
-              <th class="py-3 px-4 border-b">#</th>
-              <th class="py-3 px-4 border-b">Username</th>
-              <th class="py-3 px-4 border-b">Marks</th>
-              <th class="py-3 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if (participants && participants.length > 0) { %>
-              <% participants.forEach((p, index) => { %>
-                <tr class="hover:bg-gray-50">
-                  <td class="py-3 px-4 border-b"><%= index + 1 %></td>
-                  <td class="py-3 px-4 border-b"><%= p.username %></td>
-                  <td class="py-3 px-4 border-b"><%= p.marks %></td>
-                  <td class="py-3 px-4 border-b">
-                    <form action="/admin/delete-user/<%= p.id %>" method="POST" onsubmit="return confirm('Delete this user?')">
-                      <button class="text-red-600 hover:underline text-sm">Delete</button>
-                    </form>
-                  </td>
-                </tr>
-              <% }) %>
-            <% } else { %>
+    <section class="section split-grid">
+      <div class="panel">
+        <h3 class="section-subtitle">➕ Add New Participant</h3>
+        <form action="/admin/participants" method="POST" class="form-shell">
+          <div>
+            <label>Username</label>
+            <input type="text" name="username" required />
+          </div>
+          <div>
+            <label>Password</label>
+            <input type="password" name="password" required />
+          </div>
+          <div>
+            <label>Initial Marks (optional)</label>
+            <input type="number" name="marks" />
+          </div>
+          <div>
+            <button type="submit" class="button">Add Participant</button>
+          </div>
+        </form>
+      </div>
+        <div class="panel">
+          <h3 class="section-subtitle">➕ Add New Participant</h3>
+          <form action="/admin/participants" method="POST" class="form-shell">
+            <div>
+              <label>Username</label>
+              <input name="username" required />
+            </div>
+            <div>
+              <label>Password</label>
+              <input type="password" name="password" required />
+            </div>
+            <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.5rem;">
+              <button type="submit" class="button">Add Participant</button>
+              <a class="secondary-btn" href="/admin/participants/export<% if (q) { %>?q=<%= encodeURIComponent(q) %><% } %>">Export CSV</a>
+            </div>
+          </form>
+        </div>
+
+      <div class="panel">
+        <h3 class="section-subtitle">📋 Participant Scores</h3>
+        <div class="table-shell">
+          <table>
+            <thead>
               <tr>
-                <td colspan="4" class="py-3 px-4 text-center text-gray-500">No participants yet.</td>
+                <th>#</th>
+                <th>Username</th>
+                <th>Marks</th>
+                <th>Actions</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% if (participants && participants.length > 0) { %>
+                <% participants.forEach((p, index) => { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= p.username %></td>
+                    <td><%= p.marks %></td>
+                    <td>
+                      <form action="/admin/participants/delete/<%= p.id %>" method="POST" onsubmit="return confirm('Delete this user?')">
+                        <button class="button-secondary">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="4" class="muted">No participants yet.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="section-subtitle">📋 Participant Scores</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+          <form method="GET" action="/admin/participants">
+            <input type="search" name="q" placeholder="Search username" value="<%= q %>" />
+            <button class="secondary-btn" type="submit">Search</button>
+          </form>
+          <div class="muted">Total: <%= total %></div>
+        </div>
+        <div class="table-shell">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Best Score</th>
+                <th>Attempts</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (participants && participants.length > 0) { %>
+                <% participants.forEach((p, index) => { %>
+                  <tr>
+                    <td><%= (page - 1) * perPage + index + 1 %></td>
+                    <td><%= p.username %></td>
+                    <td><%= p.best_score %></td>
+                    <td><%= p.attempts %></td>
+                    <td>
+                      <form action="/admin/participants/delete/<%= p.id %>" method="POST" onsubmit="return confirm('Delete this user?')">
+                        <button class="button-secondary">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5" class="muted">No participants yet.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:0.8rem; display:flex; gap:0.5rem; align-items:center;">
+          <% const lastPage = Math.max(1, Math.ceil(total / perPage)); %>
+          <% if (page > 1) { %>
+            <a class="secondary-btn" href="/admin/participants?page=<%= page - 1 %><% if (q) { %>&q=<%= encodeURIComponent(q) %><% } %>">Prev</a>
+          <% } %>
+          <div class="muted">Page <%= page %> / <%= lastPage %></div>
+          <% if (page < lastPage) { %>
+            <a class="secondary-btn" href="/admin/participants?page=<%= page + 1 %><% if (q) { %>&q=<%= encodeURIComponent(q) %><% } %>">Next</a>
+          <% } %>
+        </div>
       </div>
     </section>
-
-  </div>
+  </main>
 
 </body>
 </html>

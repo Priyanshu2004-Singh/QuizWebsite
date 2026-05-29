@@ -2,73 +2,135 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quiz Home | Learn & Test</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>QuizMaster | Learn & Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gray-100 text-gray-800">
-
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md sticky top-0 z-10">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <a href="/" class="text-2xl font-bold text-gray-800">QuizMaster</a>
-      <div>
+<body>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/">QuizMaster</a>
+        <span class="chip">Practice • Improve • Repeat</span>
+      </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/quiz">Quizzes</a>
         <% if (username) { %>
-          <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md">Logout</a>
+          <a class="secondary-btn" href="/user/results">My Results</a>
+          <% if (role === 'admin') { %>
+            <a class="secondary-btn" href="/admin">Admin</a>
+          <% } %>
+          <a class="button-secondary" href="/logout">Logout</a>
         <% } else { %>
-          <a href="/login" class="mr-4 text-gray-700 hover:text-blue-500">Login</a>
-          <a href="/register" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Register</a>
+          <a class="secondary-btn" href="/login">Login</a>
+          <a class="button-primary" href="/register">Register</a>
         <% } %>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="bg-white py-20 shadow-inner">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">Sharpen Your Skills with Our Quizzes</h1>
-      <p class="text-lg sm:text-xl text-gray-600 mb-6">Practice coding, general knowledge, tech and more — one quiz at a time.</p>
-
-      <% if (typeof username !== 'undefined') { %>
-        <p class="text-3xl font-semibold text-indigo-600 mb-6">Welcome <%= username %> 👋</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <a href="/quiz" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg transition">Ongoing Quizzes</a>
-          <a href="/user/results" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-lg transition">Show My Results</a>
+  <% if (messages?.success?.length || messages?.error?.length) { %>
+    <div class="page-shell">
+      <% if (messages?.success?.length) { %>
+        <div class="flash-shell flash-success">
+          <%= messages.success.join(' ') %>
         </div>
-      <% } else { %>
-        <a href="/quiz" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-700 transition">Start Quizzes</a>
+      <% } %>
+      <% if (messages?.error?.length) { %>
+        <div class="flash-shell flash-error">
+          <%= messages.error.join(' ') %>
+        </div>
       <% } %>
     </div>
-  </section>
+  <% } %>
 
-  <!-- Categories Section -->
-  <section class="py-16 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <h2 class="text-3xl font-bold mb-10 text-center text-gray-800">Explore Quiz Categories</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  <main class="page-shell main">
+    <section class="hero-shell">
+      <div class="hero-copy">
+        <div class="hero-kicker">Modern quizzes • Real progress</div>
+        <h1 class="hero-title">Sharpen your skills, one quiz at a time.</h1>
+        <p class="hero-text">Take quick quizzes, track results, and improve steadily with instant scoring.</p>
 
-        <% for (let i = 0; i < 6; i++) { %>
-          <div class="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition border border-gray-200">
-            <img src="https://plus.unsplash.com/premium_photo-1677567996070-68fa4181775a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZWR1Y2F0aW9ufGVufDB8fDB8fHww" alt="Quiz Category" class="w-full h-40 object-cover">
-            <div class="p-5">
-              <h3 class="text-lg font-semibold text-gray-800 mb-2">Quiz Title <%= i + 1 %></h3>
-              <p class="text-gray-600 text-sm mb-4">Challenge yourself with this quiz and test your knowledge!</p>
-              <a href="/quiz/<%= i + 1 %>" class="inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-200 transition">Take Quiz →</a>
-            </div>
-          </div>
+        <div class="btn-row">
+          <a class="button-primary" href="/quiz">Explore Quizzes</a>
+          <% if (username) { %>
+            <a class="button-secondary" href="/user/results">View Results</a>
+          <% } %>
+          <% if (role === 'admin') { %>
+            <a class="button-secondary" href="/admin">Open Admin Dashboard</a>
+          <% } %>
+        </div>
+
+        <% if (username) { %>
+          <p class="muted" style="margin: 1rem 0 0;">Welcome back, <strong><%= username %></strong>.</p>
+        <% } else { %>
+          <p class="muted" style="margin: 1rem 0 0;">Log in to save attempts and see your history.</p>
         <% } %>
-
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="bg-white mt-16 py-6 shadow-inner">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500">
-      <p>© 2025 QuizMaster. All rights reserved.</p>
-      <p>Made with ❤️ using Node.js + PostgreSQL</p>
+    <section class="section">
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Total Quizzes</div>
+          <div class="metric-value"><%= stats?.quizzes ?? 0 %></div>
+          <div class="metric-note">Fresh content added regularly</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Registered Users</div>
+          <div class="metric-value"><%= stats?.users ?? 0 %></div>
+          <div class="metric-note">Join the leaderboard</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Quiz Attempts</div>
+          <div class="metric-value"><%= stats?.attempts ?? 0 %></div>
+          <div class="metric-note">Keep the streak going</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Featured</div>
+          <h2 class="section-title">Latest quizzes</h2>
+          <p class="section-text">Pick one and start instantly.</p>
+        </div>
+        <div>
+          <a class="secondary-btn" href="/quiz">View all</a>
+        </div>
+      </div>
+
+      <% if (!featuredQuizzes || featuredQuizzes.length === 0) { %>
+        <div class="panel empty-state">No quizzes available yet.</div>
+      <% } else { %>
+        <div class="quiz-grid">
+          <% featuredQuizzes.forEach((quizItem) => { %>
+            <article class="quiz-card">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap: 0.75rem;">
+                <h3 class="truncate" title="<%= quizItem.title %>"><%= quizItem.title %></h3>
+                <% if (quizItem.level) { %>
+                  <span class="badge"><%= quizItem.level %></span>
+                <% } %>
+              </div>
+              <p><%= quizItem.description || 'Quick quiz to test your knowledge.' %></p>
+              <div style="display:flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.9rem;">
+                <span class="chip">Questions: <%= quizItem.total_questions %></span>
+                <span class="chip">Marks/Q: <%= quizItem.marks_per_question %></span>
+              </div>
+              <a class="button-primary" href="/quiz/<%= quizItem.id %>">Take quiz</a>
+            </article>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell nav-row" style="padding: 1.1rem 0;">
+      <div class="footer-note">© <%= new Date().getFullYear() %> QuizMaster</div>
+      <div class="footer-note text-right">Node.js • Express • PostgreSQL (with pg-mem fallback)</div>
     </div>
   </footer>
-
 </body>
 </html>

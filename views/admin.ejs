@@ -3,74 +3,249 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Dashboard | QuizMaster</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/app.css" />
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800">
-
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold">🎓 QuizMaster Admin Panel</h1>
-    <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">Logout</a>
+<body>
+  <nav>
+    <div class="page-shell nav-row">
+      <div class="nav-left">
+        <a class="nav-brand" href="/admin">Admin</a>
+        <span class="chip">QuizMaster Control Center</span>
+      </div>
+      <div class="nav-right">
+        <a class="secondary-btn" href="/">Home</a>
+        <a class="button-secondary" href="/logout">Logout</a>
+      </div>
+    </div>
   </nav>
 
-  <!-- Flash Messages -->
-  <div class="max-w-5xl mx-auto mt-4">
-    <% if (success && success.length) { %>
-      <div class="bg-green-100 text-green-800 px-4 py-2 rounded mb-2">
-        <%= success %>
-      </div>
-    <% } %>
-    <% if (error && error.length) { %>
-      <div class="bg-red-100 text-red-800 px-4 py-2 rounded mb-2">
-        <%= error %>
-      </div>
-    <% } %>
-  </div>
+  <% if (messages?.success?.length || messages?.error?.length || (success && success.length) || (error && error.length)) { %>
+    <div class="page-shell">
+      <% if (messages?.success?.length) { %>
+        <div class="flash-shell flash-success"><%= messages.success.join(' ') %></div>
+      <% } else if (success && success.length) { %>
+        <div class="flash-shell flash-success"><%= Array.isArray(success) ? success.join(' ') : success %></div>
+      <% } %>
 
-  <!-- Admin Grid Panel -->
-  <div class="max-w-6xl mx-auto px-6 py-10">
-    <h2 class="text-3xl font-semibold mb-8 text-center">Welcome, <%= user || "Admin" %> 👋</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-      <!-- Create Quiz -->
-      <a href="/admin/create-quiz" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
-        <h3 class="text-xl font-semibold mb-2">🧠 Create Quiz</h3>
-        <p class="text-gray-600">Add new quiz questions and customize quiz settings.</p>
-      </a>
-
-      <!-- View Results -->
-      <a href="/admin/results" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
-        <h3 class="text-xl font-semibold mb-2">📊 View Results</h3>
-        <p class="text-gray-600">Check quiz performance and student scores.</p>
-      </a>
-
-      <!-- Feedback -->
-      <a href="/admin/feedbacks" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
-        <h3 class="text-xl font-semibold mb-2">📝 Student Feedback</h3>
-        <p class="text-gray-600">Read student feedback and suggestions about quizzes.</p>
-      </a>
-
-      <!-- Manage Participants -->
-      <a href="/admin/participants" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
-        <h3 class="text-xl font-semibold mb-2">👥 Manage Participants</h3>
-        <p class="text-gray-600">Add, edit, or remove participants from the system.</p>
-      </a>
-
-      <!-- Quiz History -->
-      <a href="/admin/history" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
-        <h3 class="text-xl font-semibold mb-2">📚 Quiz History</h3>
-        <p class="text-gray-600">Track all past quizzes, attempts, and data logs.</p>
-      </a>
-
-      <!-- Settings -->
-      <a href="/admin/settings" class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-200">
-        <h3 class="text-xl font-semibold mb-2">⚙️ Settings</h3>
-        <p class="text-gray-600">Update profile, system preferences, and more.</p>
-      </a>
-
+      <% if (messages?.error?.length) { %>
+        <div class="flash-shell flash-error"><%= messages.error.join(' ') %></div>
+      <% } else if (error && error.length) { %>
+        <div class="flash-shell flash-error"><%= Array.isArray(error) ? error.join(' ') : error %></div>
+      <% } %>
     </div>
-  </div>
+  <% } %>
 
+  <main class="page-shell main">
+    <section class="hero-shell">
+      <div class="hero-copy">
+        <div class="hero-kicker">Admin dashboard</div>
+        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);">Overview & recent activity</h1>
+        <p class="hero-text">Manage quizzes, review results, and monitor engagement at a glance.</p>
+
+        <div class="btn-row">
+          <a class="button-primary" href="/admin/create-quiz">Create Quiz</a>
+          <a class="button-secondary" href="/admin/results">View Results</a>
+          <a class="button-secondary" href="/admin/feedbacks">Feedback</a>
+        </div>
+
+        <p class="muted" style="margin: 1rem 0 0;">Signed in as <strong><%= username || user || 'Admin' %></strong><% if (role) { %> (<%= role %>)<% } %>.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="metric-label">Quizzes</div>
+          <div class="metric-value"><%= dashboard?.quizzes ?? 0 %></div>
+          <div class="metric-note">Total created</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Users</div>
+          <div class="metric-value"><%= dashboard?.users ?? 0 %></div>
+          <div class="metric-note">Registered accounts</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Attempts</div>
+          <div class="metric-value"><%= dashboard?.attempts ?? 0 %></div>
+          <div class="metric-note">Total submissions</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Feedback</div>
+          <div class="metric-value"><%= dashboard?.feedbacks ?? 0 %></div>
+          <div class="metric-note">Messages received</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Actions</div>
+          <h2 class="section-title">Admin tools</h2>
+          <p class="section-text">Quick navigation to key workflows.</p>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <a class="action-card" href="/admin/create-quiz">
+          <h3>🧠 Create quiz</h3>
+          <p>Build quizzes with questions and correct answers.</p>
+          <span class="chip">Create</span>
+        </a>
+        <a class="action-card" href="/admin/results">
+          <h3>📊 Results</h3>
+          <p>Review quiz attempts and scores.</p>
+          <span class="chip">Analyze</span>
+        </a>
+        <a class="action-card" href="/admin/feedbacks">
+          <h3>📝 Feedback</h3>
+          <p>Read student suggestions and issues.</p>
+          <span class="chip">Listen</span>
+        </a>
+        <a class="action-card" href="/admin/participants">
+          <h3>👥 Participants</h3>
+          <p>View participant list (demo data).</p>
+          <span class="chip">Manage</span>
+        </a>
+        <a class="action-card" href="/admin/history">
+          <h3>📚 Quiz history</h3>
+          <p>See all quizzes created so far.</p>
+          <span class="chip">Browse</span>
+        </a>
+        <a class="action-card" href="/admin/leaderboard">
+          <h3>🏆 Leaderboard</h3>
+          <p>View top performers and averages.</p>
+          <span class="chip">Insights</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Recent</div>
+          <h2 class="section-title">Latest quizzes</h2>
+          <p class="section-text">Most recently created quizzes.</p>
+        </div>
+      </div>
+
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Level</th>
+              <th>Questions</th>
+              <th>Marks/Q</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!recentQuizzes || recentQuizzes.length === 0) { %>
+              <tr>
+                <td colspan="5" class="muted">No quizzes yet.</td>
+              </tr>
+            <% } else { %>
+              <% recentQuizzes.forEach((q) => { %>
+                <tr>
+                  <td class="truncate" title="<%= q.title %>"><%= q.title %></td>
+                  <td><%= q.level || '-' %></td>
+                  <td><%= q.total_questions %></td>
+                  <td><%= q.marks_per_question %></td>
+                  <td><%= q.created_at ? new Date(q.created_at).toLocaleString() : '-' %></td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Activity</div>
+          <h2 class="section-title">Recent attempts</h2>
+          <p class="section-text">Latest quiz submissions across all users.</p>
+        </div>
+      </div>
+
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Quiz</th>
+              <th>Score</th>
+              <th>Attempted</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!recentAttempts || recentAttempts.length === 0) { %>
+              <tr>
+                <td colspan="4" class="muted">No attempts recorded yet.</td>
+              </tr>
+            <% } else { %>
+              <% recentAttempts.forEach((a) => { %>
+                <tr>
+                  <td><%= a.username %></td>
+                  <td class="truncate" title="<%= a.title %>"><%= a.title %></td>
+                  <td><span class="badge badge-success"><%= a.score %></span> / <%= a.total_marks %></td>
+                  <td><%= a.attempted_at ? new Date(a.attempted_at).toLocaleString() : '-' %></td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-kicker">Leaderboard</div>
+          <h2 class="section-title">Top performers</h2>
+          <p class="section-text">Highest average scores (with attempt count).</p>
+        </div>
+      </div>
+
+      <div class="table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Attempts</th>
+              <th>Best</th>
+              <th>Average</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (!topPerformers || topPerformers.length === 0) { %>
+              <tr>
+                <td colspan="4" class="muted">No data yet.</td>
+              </tr>
+            <% } else { %>
+              <% topPerformers.forEach((p) => { %>
+                <tr>
+                  <td><%= p.username %></td>
+                  <td><%= Number(p.attempts || 0) %></td>
+                  <td><%= Number(p.best_score || 0) %></td>
+                  <td><%= Number(p.average_score || 0).toFixed(1) %></td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-shell nav-row" style="padding: 1.1rem 0;">
+      <div class="footer-note">Admin dashboard</div>
+      <div class="footer-note text-right">Use the action cards to manage the app.</div>
+    </div>
+  </footer>
 </body>
 </html>

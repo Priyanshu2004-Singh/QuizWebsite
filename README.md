@@ -1,77 +1,65 @@
-A full-stack Quiz Web Application built with Node.js, Express.js, EJS, and PostgreSQL.
-Users can register, take quizzes, view results, and admins can manage quizzes and track performance.
+QuizMaster — full-stack Quiz Web Application
 
-🚀 Features
+Overview
+ - Node.js + Express server with server-side EJS views.
+ - PostgreSQL (production) with an in-memory `pg-mem` fallback for quick local runs.
+ - Features: user registration/login, tiered quizzes, admin panel, AI-assisted question generation, per-question responses, leaderboard and CSV exports.
 
-🔐 User authentication (students & admin)
+Quick Start (development)
+1. Install dependencies:
 
-📝 Take quizzes with multiple-choice questions
+	npm install
 
-📊 View results & track past attempts
+2. Create a `.env` at the project root (example):
 
-🎓 Admin panel to manage quizzes & monitor performance
+	DATABASE_URL=postgres://user:password@localhost:5432/quizdb
+	SESSION_SECRET=your_secret
+	PORT=3000
+	OPENAI_API_KEY=your_api_key   # optional, used for AI question generation
 
-💬 Student feedback collection
+3. Run the app:
 
-🛡 Secure with bcrypt, sessions, helmet & CSRF protection
+	npm start
 
-🛠 Tech Stack
+4. Open the site: http://localhost:3000
 
-Backend: Node.js, Express.js
+Notes
+- If PostgreSQL is not available locally the app falls back to an in-memory `pg-mem` instance — data will not persist across restarts.
+- Admin seeded credentials (development):
+  - username: admin
+  - password: admin123
 
-Database: PostgreSQL
+Key Functionality
+- Tiered quizzes: filter quizzes by `tier` (Tier 1, Tier 2) and difficulty.
+- Advanced scoring: difficulty multipliers and negative marking applied on submit.
+- AI question generator: Admins can generate Tier‑2 quizzes using OpenAI (requires `OPENAI_API_KEY`).
+- Per-question responses: stored in `responses` table for detailed reporting.
+- CSV export: Admin per-quiz report CSV is available at `/admin/quiz/:id/detail/export`.
 
-Frontend: EJS + TailwindCSS
+Testing
+- Quick manual test flow (uses curl to persist a session cookie):
 
-Auth & Security: bcrypt, express-session, connect-pg-simple, helmet, csurf
+  # register/login
+  curl -c /tmp/ck -d "username=testuser&password=pass123" -X POST http://localhost:3000/register
+  curl -b /tmp/ck -d "username=testuser&password=pass123" -X POST http://localhost:3000/login
 
-Validation & Utils: express-validator, dotenv, morgan
+  # download CSV as admin (after logging in as admin and saving cookie to /tmp/admin_ck)
+  curl -b /tmp/admin_ck http://localhost:3000/admin/quiz/7/detail/export -o quiz_7_report.csv
 
-⚡ Setup
+Project structure (high level)
+- `app.js` — application bootstrap and routes
+- `controllers/` — route handlers (auth, admin, quiz)
+- `routes/` — express routers
+- `views/` — EJS templates
+- `db/` — database connector and `schema.sql`
 
-Clone repo & install dependencies:
+Contributing
+- Open a PR for bug fixes and features. Add tests where possible.
 
-git clone https://github.com/your-username/quiz-website.git
-cd quiz-website
-npm install
+Further improvements (planned)
+- Automated tests for scoring and AI generation
+- Containerization + CI pipeline
+- Improved migration tooling for PostgreSQL
 
-
-Setup PostgreSQL & run schema.sql.
-
-Create .env:
-
-DATABASE_URL=postgres://user:password@localhost:5432/quizdb
-SESSION_SECRET=your_secret
-PORT=5000
-
-
-Run app:
-
-npm run dev
-
-
-Visit → http://localhost:5000
-
-📂 Main Tables
-
-users → user accounts (student/admin)
-
-quizzes → quiz info
-
-questions → linked to quizzes
-
-attempts → user scores
-
-feedback → suggestions from students
-
-session → login sessions
-
-🌐 Deployment
-
-Backend: Heroku / Render / Railway
-
-DB: PostgreSQL (cloud or local)
-
-📜 License
-
-MIT License.
+License
+MIT

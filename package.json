@@ -1,0 +1,32 @@
+{
+  "name": "quizwebsite",
+  "version": "1.0.0",
+  "description": "A full-stack Quiz Web Application built with Node.js, Express.js, EJS, and PostgreSQL. Users can register, take quizzes, view results, and admins can manage quizzes and track performance.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Priyanshu2004-Singh/QuizWebsite.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Priyanshu2004-Singh/QuizWebsite/issues"
+  },
+  "homepage": "https://github.com/Priyanshu2004-Singh/QuizWebsite#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "pg": "^8.21.0",
+    "pg-mem": "^3.0.14"
+  }
+}

@@ -11,9 +11,10 @@ import adminRoutes from './routes/adminRoutes.js'; // if you have
 
 
 const app = express();
+app.use(express.static('public'));
 // Setting Session
 app.use(session({
-  secret: 'yourSecretKey',
+  secret: process.env.SESSION_SECRET || 'yourSecretKey',
   resave: false,
   saveUninitialized: false
 }));
@@ -53,4 +54,5 @@ app.use(homeRoutes)
 app.use(adminRoutes)
 
 // Server
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running on http://localhost:${port}`));

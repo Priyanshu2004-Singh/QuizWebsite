@@ -16,9 +16,8 @@ DROP TABLE IF EXISTS session CASCADE;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(20) DEFAULT 'student', -- 'student' or 'admin'
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'user', -- 'user' or 'admin'
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -29,7 +28,10 @@ CREATE TABLE quizzes (
     id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     description TEXT,
-    level VARCHAR(20) NOT NULL, -- easy, medium, hard
+    level VARCHAR(20) DEFAULT 'easy', -- easy, medium, hard
+    tier INT DEFAULT 1, -- tier level for advanced quizzes (1,2,3...)
+    total_questions INT NOT NULL DEFAULT 0,
+    marks_per_question INT NOT NULL DEFAULT 1,
     created_by INT REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -45,7 +47,9 @@ CREATE TABLE questions (
     option_b VARCHAR(255) NOT NULL,
     option_c VARCHAR(255) NOT NULL,
     option_d VARCHAR(255) NOT NULL,
-    correct_answer VARCHAR(1) NOT NULL CHECK (correct_answer IN ('A','B','C','D'))
+    correct_option VARCHAR(1) NOT NULL CHECK (correct_option IN ('A','B','C','D'))
+    ,difficulty VARCHAR(20) DEFAULT 'medium' -- easy, medium, hard
+    ,ai_generated BOOLEAN DEFAULT FALSE
 );
 
 -- ================================
@@ -55,8 +59,10 @@ CREATE TABLE attempts (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     quiz_id INT REFERENCES quizzes(id) ON DELETE CASCADE,
-    score INT NOT NULL,
-    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    score INT NOT NULL DEFAULT 0,
+    total_marks INT NOT NULL DEFAULT 0,
+    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ================================
@@ -65,6 +71,7 @@ CREATE TABLE attempts (
 CREATE TABLE feedback (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    quiz_id INT REFERENCES quizzes(id) ON DELETE CASCADE,
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -80,19 +87,46 @@ CREATE TABLE "session" (
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
--- ================================
--- Sample Data (Optional for Testing)
--- ================================
-INSERT INTO users (username, email, password_hash, role) 
-VALUES 
-('admin', 'admin@example.com', 'hashedpassword', 'admin'),
-('student1', 'student1@example.com', 'hashedpassword', 'student');
+-- Password resets table (tokens for password recovery)
+DROP TABLE IF EXISTS password_resets CASCADE;
+CREATE TABLE password_resets (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(128) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT INTO quizzes (title, description, level, created_by) 
-VALUES 
-('JavaScript Basics', 'Test your knowledge of JS fundamentals', 'easy', 1);
+-- Responses: store per-question answers for attempts
+DROP TABLE IF EXISTS responses CASCADE;
+CREATE TABLE responses (
+    id SERIAL PRIMARY KEY,
+    attempt_id INT REFERENCES attempts(id) ON DELETE CASCADE,
+    question_id INT REFERENCES questions(id) ON DELETE CASCADE,
+    selected_option VARCHAR(1),
+    is_correct BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_answer) 
-VALUES 
-(1, 'What is the result of 2 + "2"?', '22', '4', 'Error', 'undefined', 'A'),
-(1, 'Which keyword is used to declare a constant in JS?', 'var', 'let', 'const', 'static', 'C');
+-- Sample Data intentionally omitted.
+-- Register a user and promote one account to admin for local testing.
+INSERT INTO users (username, password, role)
+VALUES ('admin', '$2b$10$jxaLgzfJEUwQuhWSETyoD.42bXRISBK42.9B1w/bDCEmEIkqT1quG', 'admin');
+
+INSERT INTO quizzes (title, description, level, total_questions, marks_per_question, created_by)
+VALUES
+('Quiz Title 1', 'General knowledge starter quiz.', 'easy', 1, 1, 1),
+('Quiz Title 2', 'Quick tech checkup.', 'easy', 1, 1, 1),
+('Quiz Title 3', 'Programming fundamentals refresher.', 'easy', 1, 1, 1),
+('Quiz Title 4', 'History and culture sampler.', 'easy', 1, 1, 1),
+('Quiz Title 5', 'Science basics challenge.', 'easy', 1, 1, 1),
+('Quiz Title 6', 'Logic and reasoning warm-up.', 'easy', 1, 1, 1);
+
+INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option)
+VALUES
+(1, 'Which planet is known as the Red Planet?', 'Earth', 'Mars', 'Jupiter', 'Venus', 'B'),
+(2, 'Which language runs natively in the browser?', 'Python', 'Java', 'JavaScript', 'C++', 'C'),
+(3, 'What does CSS stand for?', 'Creative Style System', 'Cascading Style Sheets', 'Computer Style Syntax', 'Color Style Sheets', 'B'),
+(4, 'Who wrote "Romeo and Juliet"?', 'Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain', 'B'),
+(5, 'What is H2O commonly known as?', 'Salt', 'Oxygen', 'Water', 'Hydrogen', 'C'),
+(6, 'What is the next number in the sequence 2, 4, 8, 16, ?', '18', '24', '32', '36', 'C');
