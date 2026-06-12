@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Login | QuizMaster</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 
 <body>
@@ -16,8 +16,8 @@
                 <span class="chip">Sign in</span>
             </div>
             <div class="nav-right">
-                <a class="secondary-btn" href="/">Home</a>
-                <a class="secondary-btn" href="/register">Register</a>
+                <a class="button-secondary" href="/">Home</a>
+                <a class="button-secondary" href="/register">Register</a>
             </div>
         </div>
     </nav>
@@ -32,8 +32,8 @@
             <% } %>
         <% } %>
 
-        <section class="form-shell narrow">
-            <h1 class="form-title">Welcome back</h1>
+        <section class="form-shell narrow fade-in-up stagger-1">
+            <h1 class="form-title"><span class="gradient-text">Welcome back</span></h1>
             <p class="form-subtitle">Log in to take quizzes and track results.</p>
 
             <form action="/login" method="POST" class="form-stack">

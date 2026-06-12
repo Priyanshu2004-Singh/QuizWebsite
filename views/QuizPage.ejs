@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title><%= quiz.title %> - Take Quiz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 <body>
   <nav>
@@ -14,22 +14,22 @@
         <span class="chip">Taking quiz</span>
       </div>
       <div class="nav-right">
-        <a class="secondary-btn" href="/user/results">My Results</a>
+        <a class="button-secondary" href="/user/results">My Results</a>
         <a class="button-secondary" href="/logout">Logout</a>
       </div>
     </div>
   </nav>
 
   <main class="page-shell main">
-    <section class="hero-shell">
+    <section class="hero-shell fade-in-up stagger-1">
       <div class="hero-copy">
         <div class="hero-kicker">Quiz</div>
-        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);"><%= quiz.title %></h1>
+        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);"><span class="gradient-text"><%= quiz.title %></span></h1>
         <p class="hero-text">Answer each question and submit when you’re ready.</p>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-2">
       <form action="/user/submit-quiz/<%= quiz.id %>" method="POST" class="content-stack">
         <% questions.forEach((q, index) => { %>
           <article class="panel" style="padding: 1.25rem;">

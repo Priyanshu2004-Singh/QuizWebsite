@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Register | QuizMaster</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 <body>
   <nav>
@@ -14,8 +14,8 @@
         <span class="chip">Create account</span>
       </div>
       <div class="nav-right">
-        <a class="secondary-btn" href="/">Home</a>
-        <a class="secondary-btn" href="/login">Login</a>
+        <a class="button-secondary" href="/">Home</a>
+        <a class="button-secondary" href="/login">Login</a>
       </div>
     </div>
   </nav>
@@ -30,8 +30,8 @@
       <% } %>
     <% } %>
 
-    <section class="form-shell narrow">
-      <h1 class="form-title">Create your account</h1>
+    <section class="form-shell narrow fade-in-up stagger-1">
+      <h1 class="form-title"><span class="gradient-text">Create your account</span></h1>
       <p class="form-subtitle">Register to take quizzes and save attempts.</p>
 
       <form action="/register" method="POST" class="form-stack">

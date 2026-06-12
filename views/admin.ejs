@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Admin Dashboard | QuizMaster</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 <body>
   <nav>
@@ -14,7 +14,7 @@
         <span class="chip">QuizMaster Control Center</span>
       </div>
       <div class="nav-right">
-        <a class="secondary-btn" href="/">Home</a>
+        <a class="button-secondary" href="/">Home</a>
         <a class="button-secondary" href="/logout">Logout</a>
       </div>
     </div>
@@ -37,10 +37,10 @@
   <% } %>
 
   <main class="page-shell main">
-    <section class="hero-shell">
+    <section class="hero-shell fade-in-up stagger-1">
       <div class="hero-copy">
         <div class="hero-kicker">Admin dashboard</div>
-        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);">Overview & recent activity</h1>
+        <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 3.2rem);"><span class="gradient-text">Overview & recent activity</span></h1>
         <p class="hero-text">Manage quizzes, review results, and monitor engagement at a glance.</p>
 
         <div class="btn-row">
@@ -53,7 +53,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-2">
       <div class="metric-grid">
         <div class="metric-card">
           <div class="metric-label">Quizzes</div>
@@ -78,7 +78,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-3">
       <div class="section-header">
         <div>
           <div class="section-kicker">Actions</div>
@@ -121,7 +121,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-4">
       <div class="section-header">
         <div>
           <div class="section-kicker">Recent</div>
@@ -162,7 +162,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-5">
       <div class="section-header">
         <div>
           <div class="section-kicker">Activity</div>
@@ -201,7 +201,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-5">
       <div class="section-header">
         <div>
           <div class="section-kicker">Leaderboard</div>

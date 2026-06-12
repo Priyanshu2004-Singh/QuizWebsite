@@ -112,21 +112,3 @@ CREATE TABLE responses (
 -- Register a user and promote one account to admin for local testing.
 INSERT INTO users (username, password, role)
 VALUES ('admin', '$2b$10$jxaLgzfJEUwQuhWSETyoD.42bXRISBK42.9B1w/bDCEmEIkqT1quG', 'admin');
-
-INSERT INTO quizzes (title, description, level, total_questions, marks_per_question, created_by)
-VALUES
-('Quiz Title 1', 'General knowledge starter quiz.', 'easy', 1, 1, 1),
-('Quiz Title 2', 'Quick tech checkup.', 'easy', 1, 1, 1),
-('Quiz Title 3', 'Programming fundamentals refresher.', 'easy', 1, 1, 1),
-('Quiz Title 4', 'History and culture sampler.', 'easy', 1, 1, 1),
-('Quiz Title 5', 'Science basics challenge.', 'easy', 1, 1, 1),
-('Quiz Title 6', 'Logic and reasoning warm-up.', 'easy', 1, 1, 1);
-
-INSERT INTO questions (quiz_id, question_text, option_a, option_b, option_c, option_d, correct_option)
-VALUES
-(1, 'Which planet is known as the Red Planet?', 'Earth', 'Mars', 'Jupiter', 'Venus', 'B'),
-(2, 'Which language runs natively in the browser?', 'Python', 'Java', 'JavaScript', 'C++', 'C'),
-(3, 'What does CSS stand for?', 'Creative Style System', 'Cascading Style Sheets', 'Computer Style Syntax', 'Color Style Sheets', 'B'),
-(4, 'Who wrote "Romeo and Juliet"?', 'Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain', 'B'),
-(5, 'What is H2O commonly known as?', 'Salt', 'Oxygen', 'Water', 'Hydrogen', 'C'),
-(6, 'What is the next number in the sequence 2, 4, 8, 16, ?', '18', '24', '32', '36', 'C');

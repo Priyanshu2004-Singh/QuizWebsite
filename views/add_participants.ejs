@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Admin Dashboard | QuizMaster</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 <body>
 
@@ -15,7 +15,7 @@
         <span class="chip">Participants</span>
       </div>
       <div class="nav-right">
-        <a class="secondary-btn" href="/admin">Dashboard</a>
+        <a class="button-secondary" href="/admin">Dashboard</a>
         <a class="button-secondary" href="/logout">Logout</a>
       </div>
     </div>
@@ -65,7 +65,7 @@
             </div>
             <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:0.5rem;">
               <button type="submit" class="button">Add Participant</button>
-              <a class="secondary-btn" href="/admin/participants/export<% if (q) { %>?q=<%= encodeURIComponent(q) %><% } %>">Export CSV</a>
+              <a class="button-secondary" href="/admin/participants/export<% if (q) { %>?q=<%= encodeURIComponent(q) %><% } %>">Export CSV</a>
             </div>
           </form>
         </div>
@@ -108,7 +108,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
           <form method="GET" action="/admin/participants">
             <input type="search" name="q" placeholder="Search username" value="<%= q %>" />
-            <button class="secondary-btn" type="submit">Search</button>
+            <button class="button-secondary" type="submit">Search</button>
           </form>
           <div class="muted">Total: <%= total %></div>
         </div>
@@ -150,11 +150,11 @@
         <div style="margin-top:0.8rem; display:flex; gap:0.5rem; align-items:center;">
           <% const lastPage = Math.max(1, Math.ceil(total / perPage)); %>
           <% if (page > 1) { %>
-            <a class="secondary-btn" href="/admin/participants?page=<%= page - 1 %><% if (q) { %>&q=<%= encodeURIComponent(q) %><% } %>">Prev</a>
+            <a class="button-secondary" href="/admin/participants?page=<%= page - 1 %><% if (q) { %>&q=<%= encodeURIComponent(q) %><% } %>">Prev</a>
           <% } %>
           <div class="muted">Page <%= page %> / <%= lastPage %></div>
           <% if (page < lastPage) { %>
-            <a class="secondary-btn" href="/admin/participants?page=<%= page + 1 %><% if (q) { %>&q=<%= encodeURIComponent(q) %><% } %>">Next</a>
+            <a class="button-secondary" href="/admin/participants?page=<%= page + 1 %><% if (q) { %>&q=<%= encodeURIComponent(q) %><% } %>">Next</a>
           <% } %>
         </div>
       </div>

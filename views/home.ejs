@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>QuizMaster | Learn & Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 <body>
   <nav>
@@ -14,15 +14,15 @@
         <span class="chip">Practice • Improve • Repeat</span>
       </div>
       <div class="nav-right">
-        <a class="secondary-btn" href="/quiz">Quizzes</a>
+        <a class="button-secondary" href="/quiz">Quizzes</a>
         <% if (username) { %>
-          <a class="secondary-btn" href="/user/results">My Results</a>
+          <a class="button-secondary" href="/user/results">My Results</a>
           <% if (role === 'admin') { %>
-            <a class="secondary-btn" href="/admin">Admin</a>
+            <a class="button-secondary" href="/admin">Admin</a>
           <% } %>
           <a class="button-secondary" href="/logout">Logout</a>
         <% } else { %>
-          <a class="secondary-btn" href="/login">Login</a>
+          <a class="button-secondary" href="/login">Login</a>
           <a class="button-primary" href="/register">Register</a>
         <% } %>
       </div>
@@ -45,10 +45,10 @@
   <% } %>
 
   <main class="page-shell main">
-    <section class="hero-shell">
+    <section class="hero-shell fade-in-up stagger-1">
       <div class="hero-copy">
         <div class="hero-kicker">Modern quizzes • Real progress</div>
-        <h1 class="hero-title">Sharpen your skills, one quiz at a time.</h1>
+        <h1 class="hero-title"><span class="gradient-text">Sharpen your skills</span>, one quiz at a time.</h1>
         <p class="hero-text">Take quick quizzes, track results, and improve steadily with instant scoring.</p>
 
         <div class="btn-row">
@@ -69,7 +69,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-2">
       <div class="metric-grid">
         <div class="metric-card">
           <div class="metric-label">Total Quizzes</div>
@@ -89,7 +89,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section fade-in-up stagger-3">
       <div class="section-header">
         <div>
           <div class="section-kicker">Featured</div>
@@ -97,7 +97,7 @@
           <p class="section-text">Pick one and start instantly.</p>
         </div>
         <div>
-          <a class="secondary-btn" href="/quiz">View all</a>
+          <a class="button-secondary" href="/quiz">View all</a>
         </div>
       </div>
 

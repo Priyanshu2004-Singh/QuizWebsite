@@ -27,6 +27,25 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "pg": "^8.21.0",
-    "pg-mem": "^3.0.14"
+    "pg-mem": "^3.0.14",
+    "helmet": "^7.0.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "csurf": "^1.11.0",
+    "express-rate-limit": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write ."
   }
 }

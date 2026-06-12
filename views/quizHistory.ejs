@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Quiz History</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="stylesheet" href="/css/app.css?v=2" />
 </head>
 <body>
   <div class="page-shell main">
@@ -36,7 +36,7 @@
                     <td><%= quiz.marks_per_question %></td>
                     <td><%= quiz.created_by || 'Unknown' %></td>
                       <td><%= new Date(quiz.created_at).toLocaleString() %></td>
-                      <td><a class="secondary-btn" href="/admin/quiz/<%= quiz.id %>/detail">Report</a></td>
+                      <td><a class="button-secondary" href="/admin/quiz/<%= quiz.id %>/detail">Report</a></td>
                   </tr>
                 <% }) %>
               <% } else { %>
